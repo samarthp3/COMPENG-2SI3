@@ -1,0 +1,3 @@
+﻿  HashTableLin.cpp
+C:\Users\samar\Documents\University\Year 2\2SI3\Lab5\HashTableLin.cpp(12,28): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  Lab5.vcxproj -> C:\Users\samar\Documents\University\Year 2\2SI3\Lab5\Lab5\x64\Debug\Lab5.exe

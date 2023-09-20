@@ -1,0 +1,133 @@
+#include "HugeInteger.h"
+#include <vector>
+#include <string>
+#include <random>
+
+using namespace std;
+
+HugeInteger::HugeInteger(const std::string& val) {
+
+	isNegative = 0;                                                 //flag for negative integer
+    int i = 0;
+
+	if (val.empty()) {
+		throw invalid_argument("Please enter only an integer");     //throw invalid argument if the string val is empty (using standard library)
+	}
+
+    if (val[0] == '-') {                                            //if the first element in the string is a negative sign then set flag to 1
+        isNegative = 1;
+        i++;
+    }
+
+    while (i < val.length()) {                                      //run while loop until the length. If the first item is a negative sign then the first element is "skipped" since i would have been incremented by 1
+        if (val[i] >= 48 && val[i] <= 57) {                         //check if the element is actually between 0 to 9
+            intList.push_back(int(val[i]) - 48);                    //add element to the vector intList (defined in header) 
+			i++;
+        }
+        else {
+            throw invalid_argument("Invalid character in HugeInteger string");
+        }
+    }
+}
+
+HugeInteger::HugeInteger(int n) {
+	
+	if (n < 1) {
+		throw invalid_argument("Please enter a positive digit count");
+	}
+
+	int firstDigit = (rand() % 3) + 1;           //use rand function and modulo with 3 (but you could chose any number). If the number was fully divisible by 3, then the result of the modulus would be 0 and you'd add 1 to the random number. This makes sure the first digit isn't 0
+	intList.push_back(firstDigit);               //push to the intList vector                           
+
+	for (int i = 1; i < n; i++) {                //keep adding random integers to intList until size n. Modulo 10 is done to make sure only one digit is added at a time
+		intList.push_back(rand() % 10);
+	}
+}
+
+HugeInteger HugeInteger::add(const HugeInteger& h) {
+    
+    int carry = 0;
+    int sum = 0;
+
+    int digit1_size = intList.size();
+    int digit2_size = h.intList.size();
+    
+    //find which HugeInteger is larger
+    int limit = digit1_size > digit2_size ? digit1_size : digit2_size;              
+    
+    for (int i = 0; i < limit; i++) {
+        // Get the current digits from both numbers. These ternary statements either get the value of the digit at the ith element or or assign it 0 if their size is smaller than i.
+        int digit1 = i < digit1_size ? intList[digit1_size - i - 1] : 0;
+        int digit2 = i < digit2_size ? h.intList[digit2_size - i - 1] : 0;
+
+        // Add the digits and the carry value
+        sum = digit1 + digit2 + carry;
+        
+        // Check if there is a carry value
+        if (sum >= 10) {
+            carry = 1;
+            sum -= 10;
+        }
+        else {
+            carry = 0;
+            }
+
+        // Add the sum to the result list
+        resultList.push_back(sum);
+    }
+
+    // If there is still a carry value, add it to the result list
+    if (carry == 1) {
+        resultList.push_back(carry);
+    }
+    
+    int j = resultList.size() - 1;
+
+    for (int a = 0; a < (resultList.size() / 2); a++)
+    {
+        int temp = resultList[a];
+        resultList[a] = resultList[j];
+        resultList[j] = temp;
+        j--;
+    }
+
+    // Convert the result list to a string and return a new HugeInteger
+    std::string result = "";
+    for (int i = 0; i < resultList.size(); i++) {
+        result += std::to_string(resultList[i]);
+    }
+    
+    return HugeInteger(result);
+
+}
+
+HugeInteger HugeInteger::subtract(const HugeInteger& h) {
+	// TODO
+	return HugeInteger("");
+}
+
+HugeInteger HugeInteger::multiply(const HugeInteger& h) {
+	// TODO
+	return HugeInteger("");
+}
+
+int HugeInteger::compareTo(const HugeInteger& h) {
+	// TODO
+	return 0;
+}
+
+std::string HugeInteger::toString() {
+
+	int vectorSize = intList.size();                //find size of intList
+	string intString = "";                          //define empty string that is to be filled and returned
+
+
+	for (int i = 0; i < vectorSize; i++) {          //iterate through each element of the vector
+		intString += to_string(intList[i]);         //add the element to the intString
+	}
+
+	if (isNegative == 1) {                          //if the flag from the constructor function flagged the string to have a negative sign at element 1 then add a '-' to the beginning of intList
+		intString = '-' + intString;
+	}
+	return intString;
+}
